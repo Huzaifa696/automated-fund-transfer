@@ -1,0 +1,23 @@
+# Example config for automated-fund-transfer
+
+# Path to sender keypair file (JSON keypair file used by solana CLI)
+sender_keypair = "/home/jito/identity.json"
+
+# Receiver public key
+receiver_pubkey = "Receiver11111111111111111111111111111111111"
+
+# Threshold: keep this many SOL on the sender. Transfer any excess above this.
+# 1 week worth of SOLs required for voting
+sol_threshold = 7.0
+
+# How long to sleep (seconds) between checks when idle
+# target every 4 hrs 4*60*60 to minimize transfer fee
+# cost per month = 5000 lamports fee * ((24hr / 4) * 30 days) = 900000 lamports = 0.0009 SOL = ~0.2088 $
+poll_interval_seconds = 14400
+
+# RPC provider URL (http(s))
+rpc_provider = "https://api.mainnet-beta.solana.com"
+
+# Slack webhook URL (optional). Set to empty string to disable slack notifications.
+slack_webhook = ""
+
