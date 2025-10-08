@@ -1,7 +1,7 @@
 [package]
 name = "automated-fund-transfer"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
 
 [dependencies]
 env_logger = "0.11" 
@@ -16,10 +16,10 @@ tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }
 tracing-appender = "0.2"
 reqwest = { version = "0.11", features = ["json", "blocking", "rustls-tls"] }
-solana-client = "3.0.1"
-solana-sdk = "3.0.0"
-solana-commitment-config = "3.0.0"
-solana-system-interface = "2.0"
+solana-client = "=2.3.11"
+solana-sdk = "2.2.1"
+solana-commitment-config = "2.2.1"
+solana-system-interface = "1.0"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
 humantime = "2"
 clap = { version = "4", features = ["derive"] }
