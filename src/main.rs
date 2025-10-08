@@ -27,10 +27,6 @@ struct Args {
     /// Path to the TOML config file
     #[clap(long, default_value = "/etc/automated-fund-transfer/config.toml")]
     config: String,
-
-    /// Dry run: do not actually send transactions
-    #[clap(long, action)]
-    dry_run: bool,
 }
 
 /// Configuration structure for the Solana excess funds transfer service.
@@ -49,10 +45,10 @@ struct Config {
     /// If not set, defaults to `DEFAULT_SOL_THRESHOLD`.
     sol_threshold: Option<f64>,
 
-    /// Optional polling interval in seconds.
+    /// Optional polling interval in days.
     /// This determines how frequently the program checks the balance.
-    /// Defaults to `DEFAULT_POLL_INTERVAL_SECONDS`.
-    poll_interval_seconds: Option<u64>,
+    /// Defaults to `DEFAULT_POLL_INTERVAL_DAYS`.
+    poll_interval_days: Option<u64>,
 
     /// The Solana RPC endpoint to connect to (e.g., https://api.mainnet-beta.solana.com).
     /// Used for balance checks, leader schedule, and sending transactions.
@@ -67,17 +63,18 @@ struct Config {
 // 1 week worth of SOLs required for voting
 const DEFAULT_SOL_THRESHOLD: f64 = 7.0;
 
-// target every 4 hrs 4*60*60 to minimize transfer fee
-// cost per month = 5000 lamports fee * ((24hr / 4) * 30 days) = 900000 lamports = 0.0009 SOL = ~0.2088 $
-const DEFAULT_POLL_INTERVAL_SECONDS: u64 = 14_400;
+// to ease up the auditing process
+const DEFAULT_POLL_INTERVAL_DAYS: u64 = 7;
+
+const SECONDS_PER_DAY: u64 = 24 * 60 * 60;
 
 impl Config {
     fn fill_defaults(mut self) -> Self {
         if self.sol_threshold.is_none() {
             self.sol_threshold = Some(DEFAULT_SOL_THRESHOLD);
         }
-        if self.poll_interval_seconds.is_none() {
-            self.poll_interval_seconds = Some(DEFAULT_POLL_INTERVAL_SECONDS);
+        if self.poll_interval_days.is_none() {
+            self.poll_interval_days = Some(DEFAULT_POLL_INTERVAL_DAYS);
         }
         self
     }
@@ -114,7 +111,7 @@ async fn main() -> Result<()> {
         "rpc_provider": cfg.rpc_provider,
         "slack_webhook": cfg.slack_webhook,
         "sol_threshold": cfg.sol_threshold,
-        "poll_interval_seconds": cfg.poll_interval_seconds,
+        "poll_interval_days": cfg.poll_interval_days,
         "sender_keypair": "[REDACTED]" // Hide sensitive path
     });
 
@@ -146,8 +143,7 @@ async fn main() -> Result<()> {
 
     let threshold_lamports = sol_to_lamports(cfg.sol_threshold.unwrap_or(DEFAULT_SOL_THRESHOLD));
     let poll_interval = Duration::from_secs(
-        cfg.poll_interval_seconds
-            .unwrap_or(DEFAULT_POLL_INTERVAL_SECONDS),
+        cfg.poll_interval_days.unwrap_or(DEFAULT_POLL_INTERVAL_DAYS) * SECONDS_PER_DAY,
     );
     let slack_webhook = cfg.slack_webhook.clone();
     info!(

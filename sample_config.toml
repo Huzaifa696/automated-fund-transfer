@@ -1,0 +1,24 @@
+# Example config for automated-fund-transfer
+
+# Path to sender keypair file (JSON keypair file used by solana CLI)
+sender_keypair = "/home/huzaifa/.config/solana/id.json"
+
+# Receiver public key
+receiver_pubkey = "H7o1WSG4dAUFihPUkz1eHiW6L19gb71pEg4WnVpGhqhC"
+
+# Threshold: keep this many SOL on the sender. Transfer any excess above this.
+# 1 week worth of SOLs required for voting
+sol_threshold = 7.0
+
+# How long to sleep (days) between checks when idle
+# to ease up the auditing process
+poll_interval_days = 7
+
+# RPC provider URL (http(s))
+# rpc_provider = "https://api.testnet.solana.com"
+# rpc_provider = "https://api.mainnet-beta.solana.com"
+rpc_provider = "http://127.0.0.1:8899"
+
+# Slack webhook URL (optional). Set to empty string to disable slack notifications.
+slack_webhook = "https://hooks.slack.com/services/XXXX/YYYY/ZZZZ"
+

@@ -1,0 +1,18 @@
+[Unit]
+Description=Automated Fund Transfer Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/automated-fund-transfer --config /etc/automated-fund-transfer/config.toml
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/var/lib/automated-fund-transfer
+Environment=RUST_LOG=info
+StandardOutput=append:/var/log/automated-fund-transfer/service.log
+StandardError=append:/var/log/automated-fund-transfer/service.log
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
